@@ -41,9 +41,9 @@ public class EnergyBar : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.LeftShift))
         {
-            LoseEnergy(0.1f);
+            LoseEnergy(0.05f);
         }
-        LoseEnergy(1f * Time.deltaTime);
+        LoseEnergy(0.5f * Time.deltaTime);
 
     }
 }

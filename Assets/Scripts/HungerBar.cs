@@ -14,7 +14,7 @@ public class HungerBar : MonoBehaviour
     {
         if (_currentHunger > 0)
         {
-            _currentHunger -= 3f * Time.deltaTime;
+            _currentHunger -= 2f * Time.deltaTime;
             _hungerBar.fillAmount = _currentHunger / 100f;
             _level.text = _currentHunger.ToString("F0") + " %";
         }
