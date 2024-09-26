@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ClaireController : MonoBehaviour {
+public class ClaireController : MonoBehaviour
+{
 
     Animator claireAnimator;
     AudioSource claireAudioSource;
     CapsuleCollider claireCapsule;
+    public EnergyBar energyBar;
 
     float axisH, axisV;
 
@@ -18,7 +20,7 @@ public class ClaireController : MonoBehaviour {
     const float timeout = 60.0f;
     [SerializeField] float countdown = timeout;
 
-   
+
     [SerializeField] AudioClip sndJump, sndImpact, sndLeftFoot, sndRightFoot;
     bool switchFoot = false;
 
@@ -32,24 +34,28 @@ public class ClaireController : MonoBehaviour {
         claireCapsule = GetComponent<CapsuleCollider>();
     }
 
-    void Update () {
+    void Update()
+    {
 
         axisH = Input.GetAxis("Horizontal");
         axisV = Input.GetAxis("Vertical");
 
-        if(axisV>0)
+        if (axisV > 0)
         {
-            if(Input.GetKey(KeyCode.LeftShift))
+            if (Input.GetKey(KeyCode.LeftShift))
             {
-                transform.Translate(Vector3.forward * runSpeed * axisV * Time.deltaTime);
-                claireAnimator.SetFloat("run", axisV);
+                if (energyBar._currentEnergy > 0)
+                {
+                    transform.Translate(Vector3.forward * runSpeed * axisV * Time.deltaTime);
+                    claireAnimator.SetFloat("run", axisV);
+                }
             }
             else
             {
                 transform.Translate(Vector3.forward * walkSpeed * axisV * Time.deltaTime);
                 claireAnimator.SetBool("walk", true);
                 claireAnimator.SetFloat("run", 0);
-            }            
+            }
         }
         else
         {
@@ -68,25 +74,25 @@ public class ClaireController : MonoBehaviour {
 
         transform.Rotate(Vector3.up * rotSpeed * Time.deltaTime * axisH * 2f);
 
-        if(axisV < 0)
-        {            
+        if (axisV < 0)
+        {
             claireAnimator.SetBool("walkBack", true);
             claireAnimator.SetFloat("run", 0);
             transform.Translate(Vector3.forward * walkSpeed * axisV * Time.deltaTime);
         }
         else
         {
-            claireAnimator.SetBool("walkBack", false);            
+            claireAnimator.SetBool("walkBack", false);
 
         }
 
         //Idle Dance Twerk
 
-        if(axisH==0 && axisV==0)
+        if (axisH == 0 && axisV == 0)
         {
             countdown -= Time.deltaTime;
 
-            if(countdown<=0)
+            if (countdown <= 0)
             {
                 claireAnimator.SetBool("dance", true);
                 transform.Find("AudioDance").GetComponent<AudioSource>().enabled = true;
@@ -101,20 +107,20 @@ public class ClaireController : MonoBehaviour {
 
         //Debug Dead 
 
-        if(Input.GetKeyDown(KeyCode.AltGr))
+        if (Input.GetKeyDown(KeyCode.AltGr))
         {
             ClaireDead();
         }
 
         //curve de saut
-        if(isJumping)
-        claireCapsule.height = claireAnimator.GetFloat("colheight");
-              
+        if (isJumping)
+            claireCapsule.height = claireAnimator.GetFloat("colheight");
+
     }
 
     private void FixedUpdate()
     {
-        if(Input.GetKeyDown(KeyCode.Space) && !isJumping)
+        if (Input.GetKeyDown(KeyCode.Space) && !isJumping)
         {
             isJumping = true;
             rb.AddForce(Vector3.up * jumpForce);
@@ -139,11 +145,11 @@ public class ClaireController : MonoBehaviour {
 
     public void PlayFootStep()
     {
-        if(!claireAudioSource.isPlaying)
+        if (!claireAudioSource.isPlaying)
         {
             switchFoot = !switchFoot;
 
-            if(switchFoot)
+            if (switchFoot)
             {
                 claireAudioSource.pitch = 2f;
                 claireAudioSource.PlayOneShot(sndLeftFoot);
