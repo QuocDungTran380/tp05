@@ -13,7 +13,7 @@ public class ClaireController : MonoBehaviour
     float axisH, axisV;
 
     [SerializeField]
-    float walkSpeed = 2f, runSpeed = 5f, rotSpeed = 100f, jumpForce = 350;
+    float walkSpeed = 2f, runSpeed = 5f, rotSpeed = 150f, jumpForce = 350;
 
     Rigidbody rb;
 
