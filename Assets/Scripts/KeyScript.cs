@@ -2,19 +2,18 @@ using UnityEngine;
 
 public class KeyScript : MonoBehaviour
 {
-    private int numberOfKeys = 0;
-    private Animator _animator;
+    public static int _numberOfKeys;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        _animator = GameObject.Find("Door").GetComponent<Animator>();
+        _numberOfKeys = 0;
     }
 
     void OnCollisionEnter(Collision other)
     {
         if (other.gameObject.CompareTag("Player"))
         {
-            numberOfKeys++;
+            _numberOfKeys++;
             Destroy(gameObject);
         }
     }
@@ -22,9 +21,9 @@ public class KeyScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (numberOfKeys == 3)
+        if (_numberOfKeys == 3)
         {
-            _animator.SetBool("HasEntered", false);
+            GameObject.Find("Door").GetComponent<Door>()._canOpen = true;
         }
         
     }

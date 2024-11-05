@@ -1121,6 +1121,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 852da33286b124c44a99162576253a1c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _canOpen: 0
 --- !u!1 &3650590994408855146
 GameObject:
   m_ObjectHideFlags: 0
@@ -4306,9 +4307,6 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 170560, guid: cc5de5e674870ca479a40105f80555ad, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 8174196879759272640}
-    - targetCorrespondingSourceObject: {fileID: 170560, guid: cc5de5e674870ca479a40105f80555ad, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 6465573677150561368}
     - targetCorrespondingSourceObject: {fileID: 105912, guid: cc5de5e674870ca479a40105f80555ad, type: 3}
       insertIndex: -1
@@ -4425,18 +4423,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 170560, guid: cc5de5e674870ca479a40105f80555ad, type: 3}
   m_PrefabInstance: {fileID: 2488243356924242673}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &8174196879759272640
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2488243356924342449}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 694807cd088ad90449733a0a3e44f065, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!64 &6465573677150561368
 MeshCollider:
   m_ObjectHideFlags: 0

@@ -69,7 +69,7 @@ public class State
     public bool CanSeePlayer()
     {
         RaycastHit hit;
-        Physics.SphereCast(npc.transform.position, 10f, npc.transform.TransformDirection(Vector3.forward), out hit, Mathf.Infinity);
+        Physics.Raycast(npc.transform.position, npc.transform.TransformDirection(Vector3.forward), out hit, Mathf.Infinity);
         if (hit.collider.CompareTag("Player"))
         {
             Debug.DrawRay(npc.transform.position, npc.transform.TransformDirection(Vector3.forward) * hit.distance, Color.yellow);
