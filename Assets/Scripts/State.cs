@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,7 +7,6 @@ using UnityEngine.AI;
 // Classe de base représentant un état pour le NPC (personnage non joueur)
 public class State
 {
-
     // Différents états possibles pour le NPC
     public enum STATE
     {
@@ -69,17 +69,36 @@ public class State
     public bool CanSeePlayer()
     {
         RaycastHit hit;
-        Physics.Raycast(npc.transform.position, npc.transform.TransformDirection(Vector3.forward), out hit, Mathf.Infinity);
-        if (hit.collider.CompareTag("Player"))
+        if (Physics.Raycast(npc.transform.position, npc.transform.TransformDirection(Vector3.forward), out hit, Mathf.Infinity))
         {
-            Debug.DrawRay(npc.transform.position, npc.transform.TransformDirection(Vector3.forward) * hit.distance, Color.yellow);
-            return true;
+            Debug.DrawRay(npc.transform.position, npc.transform.TransformDirection(Vector3.forward) * hit.distance, Color.white);
+            if (hit.collider.CompareTag("Player"))
+            {
+                Debug.DrawRay(npc.transform.position, npc.transform.TransformDirection(Vector3.forward) * hit.distance, Color.yellow);
+                return true;
+            }
         }
-        else
+        if (Physics.Raycast(npc.transform.position, Quaternion.AngleAxis(15f, npc.transform.up) * npc.transform.forward, out hit, Mathf.Infinity))
         {
-            Debug.DrawRay(npc.transform.position, npc.transform.TransformDirection(Vector3.forward) * 1000, Color.white);
+            Debug.DrawRay(npc.transform.position, Quaternion.AngleAxis(15f, npc.transform.up) * npc.transform.forward * hit.distance, Color.white);
+            if (hit.collider.CompareTag("Player"))
+            {
+                Debug.DrawRay(npc.transform.position, Quaternion.AngleAxis(15f, npc.transform.up) * npc.transform.forward * hit.distance, Color.yellow);
+                return true;
+            }
+        }
+
+        if (Physics.Raycast(npc.transform.position, Quaternion.AngleAxis(-15f, npc.transform.up) * npc.transform.forward, out hit, Mathf.Infinity))
+        {
+            Debug.DrawRay(npc.transform.position, Quaternion.AngleAxis(-15f, npc.transform.up) * npc.transform.forward * hit.distance, Color.white);
+            if (hit.collider.CompareTag("Player"))
+            {
+                Debug.DrawRay(npc.transform.position, Quaternion.AngleAxis(-15f, npc.transform.up) * npc.transform.forward * hit.distance, Color.yellow);
+                return true;
+            }
             return false;
         }
+        return false;
     }
 
     // Méthode pour vérifier si le joueur est derrière le NPC
@@ -124,7 +143,7 @@ public class Idle : State
             nextState = new Pursue(npc, agent, anim, player);
             stage = EVENT.EXIT;
         }
-        else if (Random.Range(0, 100) < 10)
+        else if (UnityEngine.Random.Range(0, 100) < 10)
         {
             nextState = new Patrol(npc, agent, anim, player);
             stage = EVENT.EXIT;
@@ -250,8 +269,7 @@ public class Pursue : State
 // État "Attack" : NPC attaque le joueur
 public class Attack : State
 {
-    float rotationSpeed = 2.0f;
-
+    private bool hasHit = false;
     public Attack(GameObject _npc, NavMeshAgent _agent, Animator _anim, Transform _player)
         : base(_npc, _agent, _anim, _player)
     {
@@ -260,7 +278,6 @@ public class Attack : State
 
     public override void Enter()
     {
-        Debug.Log("Attacking player");
         anim.enabled = true;
         anim.SetBool("IsClose", true);
         agent.isStopped = true;
@@ -274,7 +291,11 @@ public class Attack : State
         // direction.y = 0.0f;
 
         // npc.transform.rotation = Quaternion.Slerp(npc.transform.rotation, Quaternion.LookRotation(direction), Time.deltaTime * rotationSpeed);
-
+        if (CanAttackPlayer() && !hasHit)
+        {
+            GameObject.FindGameObjectWithTag("HealthBar").GetComponent<HealthBar>().TakeDamage(1f);
+            hasHit = true;
+        }
         if (!CanAttackPlayer())
         {
             anim.SetBool("IsClose", false);
@@ -285,6 +306,7 @@ public class Attack : State
 
     public override void Exit()
     {
+        hasHit = false;
         base.Exit();
     }
 }

@@ -38,9 +38,4 @@ public class HealthBar : MonoBehaviour
         _healthBar.fillAmount = _currentHealth / 100f;
         _level.text = _currentHealth + " %";
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-    }
 }

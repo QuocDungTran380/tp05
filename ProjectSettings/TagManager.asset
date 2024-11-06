@@ -8,6 +8,7 @@ TagManager:
   - EnergyItems
   - Checkpoint
   - Safe
+  - HealthBar
   layers:
   - Default
   - TransparentFX
