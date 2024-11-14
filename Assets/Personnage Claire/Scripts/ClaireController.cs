@@ -161,7 +161,7 @@ public class ClaireController : MonoBehaviour
         }
     }
 
-    public void SwitchIsJumping()
+    public void Jumping()
     {
         isJumping = false;
     }
