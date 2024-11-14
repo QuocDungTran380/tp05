@@ -35,7 +35,7 @@ public class State
     protected NavMeshAgent agent;        // Agent de navigation pour les déplacements
 
     // Variables de distance et d'angle pour détecter le joueur
-    float attackDistance = 1.0f;              // Distance de tir
+    float attackDistance = 1.0f;
 
     // Constructeur pour initialiser les paramètres de l'état
     public State(GameObject _npc, NavMeshAgent _agent, Animator _anim, Transform _player)
@@ -116,6 +116,11 @@ public class State
         Vector3 direction = player.position - npc.transform.position;
         if (direction.magnitude < attackDistance)
         {
+            if (player.GetComponent<ClaireController>().isJumping)
+            {
+                npc.GetComponent<AI>().EnemyHit();
+                Debug.Log("Is jumping over enemy");
+            }
             return true;
         }
         return false;
@@ -247,15 +252,21 @@ public class Pursue : State
 
         if (agent.hasPath)
         {
+            float distance = agent.remainingDistance;
             if (CanAttackPlayer())
             {
                 nextState = new Attack(npc, agent, anim, player);
                 stage = EVENT.EXIT;
             }
-            else if (!CanSeePlayer())
+            else if (!CanSeePlayer() || distance > 10.0f)
             {
-                nextState = new Patrol(npc, agent, anim, player);
-                stage = EVENT.EXIT;
+                float timeout = 5f;
+                timeout -= Time.deltaTime;
+                if (timeout <= 0)
+                {
+                    nextState = new Patrol(npc, agent, anim, player);
+                    stage = EVENT.EXIT;
+                }
             }
         }
     }
@@ -269,7 +280,8 @@ public class Pursue : State
 // État "Attack" : NPC attaque le joueur
 public class Attack : State
 {
-    private bool hasHit = false;
+    private float attackCooldown = 1f;
+    private float attackCooldownLeft = 0f;
     public Attack(GameObject _npc, NavMeshAgent _agent, Animator _anim, Transform _player)
         : base(_npc, _agent, _anim, _player)
     {
@@ -279,22 +291,22 @@ public class Attack : State
     public override void Enter()
     {
         anim.enabled = true;
-        anim.SetBool("IsClose", true);
         agent.isStopped = true;
         base.Enter();
     }
 
     public override void Update()
     {
-        // Vector3 direction = player.position - npc.transform.position;
-        // float angle = Vector3.Angle(direction, npc.transform.forward);
-        // direction.y = 0.0f;
-
-        // npc.transform.rotation = Quaternion.Slerp(npc.transform.rotation, Quaternion.LookRotation(direction), Time.deltaTime * rotationSpeed);
-        if (CanAttackPlayer() && !hasHit)
+        attackCooldownLeft -= Time.deltaTime;
+        if (CanAttackPlayer() && attackCooldownLeft <= 0)
         {
-            GameObject.FindGameObjectWithTag("HealthBar").GetComponent<HealthBar>().TakeDamage(1f);
-            hasHit = true;
+            attackCooldownLeft = attackCooldown;
+            anim.SetBool("IsClose", true);
+            if (anim.GetCurrentAnimatorStateInfo(0).normalizedTime > 1)
+            {
+                GameObject.FindGameObjectWithTag("HealthBar").GetComponent<HealthBar>().TakeDamage(1f);
+                player.GetComponent<ClaireController>().Hit();
+            }
         }
         if (!CanAttackPlayer())
         {
@@ -306,7 +318,6 @@ public class Attack : State
 
     public override void Exit()
     {
-        hasHit = false;
         base.Exit();
     }
 }

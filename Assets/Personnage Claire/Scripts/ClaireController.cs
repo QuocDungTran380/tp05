@@ -9,7 +9,8 @@ public class ClaireController : MonoBehaviour
     AudioSource claireAudioSource;
     CapsuleCollider claireCapsule;
     public EnergyBar energyBar;
-
+    public GameObject timerManager;
+    private int hitCount = 0;
     float axisH, axisV;
 
     [SerializeField]
@@ -24,7 +25,7 @@ public class ClaireController : MonoBehaviour
     [SerializeField] AudioClip sndJump, sndImpact, sndLeftFoot, sndRightFoot;
     bool switchFoot = false;
 
-    [SerializeField] bool isJumping = false;
+    [SerializeField] public bool isJumping = false;
 
     private void Awake()
     {
@@ -36,7 +37,6 @@ public class ClaireController : MonoBehaviour
 
     void Update()
     {
-
         axisH = Input.GetAxis("Horizontal");
         axisV = Input.GetAxis("Vertical");
 
@@ -134,7 +134,6 @@ public class ClaireController : MonoBehaviour
     {
         claireAnimator.SetTrigger("dead");
         GetComponent<ClaireController>().enabled = false;
-
     }
 
     public void PlaySoundImpact()
@@ -165,5 +164,14 @@ public class ClaireController : MonoBehaviour
     public void SwitchIsJumping()
     {
         isJumping = false;
+    }
+
+    public void Hit()
+    {
+        hitCount++;
+        if (hitCount == 5)
+        {
+            ClaireDead();
+        }
     }
 }

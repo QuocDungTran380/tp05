@@ -24,6 +24,7 @@ public class KeyScript : MonoBehaviour
         if (_numberOfKeys == 3)
         {
             GameObject.Find("Door").GetComponent<Door>()._canOpen = true;
+            GameObject.Find("Portal").gameObject.SetActive(true);
         }
         
     }
